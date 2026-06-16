@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEP/RTCDP Promotion Request — Bounteous CDP Delivery</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #F3F2F1;
+      color: #201F1E;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .form-wrap { max-width: 720px; margin: 0 auto; }
+
+    .form-header {
+      background: #0078D4;
+      border-radius: 8px 8px 0 0;
+      padding: 1.75rem 2rem 1.25rem;
+      color: #fff;
+    }
+    .form-header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .form-header .subtitle { font-size: 13px; opacity: 0.85; margin-bottom: 1rem; }
+    .progress-bar { height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: #fff; border-radius: 2px; transition: width 0.3s; }
+    .progress-label { font-size: 11px; opacity: 0.75; margin-top: 5px; text-align: right; }
+
+    .form-body {
+      background: #fff;
+      border: 1px solid #E1DFDD;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 0 2rem 2rem;
+    }
+
+    .section {
+      border-left: 3px solid #0078D4;
+      padding: 1.25rem 0 0.5rem 1rem;
+      margin: 1.75rem 0 0.5rem;
+    }
+    .section-title { font-size: 15px; font-weight: 600; color: #201F1E; }
+    .section-sub { font-size: 12px; color: #605E5C; margin-top: 2px; }
+
+    .field { margin: 1rem 0; }
+    .field label { display: block; font-size: 13px; font-weight: 600; color: #201F1E; margin-bottom: 5px; }
+    .field label .req { color: #A4262C; margin-left: 2px; }
+    .field .hint { font-size: 11px; color: #605E5C; margin-top: 4px; }
+    .field .error-msg { font-size: 11px; color: #A4262C; margin-top: 4px; display: none; }
+    .field.invalid .error-msg { display: block; }
+
+    input[type=text], input[type=date], select, textarea {
+      width: 100%;
+      font-size: 14px;
+      font-family: inherit;
+      padding: 7px 10px;
+      border: 1px solid #8A8886;
+      border-radius: 4px;
+      background: #fff;
+      color: #201F1E;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input[type=text]:focus, input[type=date]:focus, select:focus, textarea:focus {
+      border-color: #0078D4;
+      box-shadow: 0 0 0 2px rgba(0,120,212,0.2);
+    }
+    .field.invalid input, .field.invalid select, .field.invalid textarea {
+      border-color: #A4262C;
+    }
+    textarea { min-height: 72px; resize: vertical; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 520px) { .two-col { grid-template-columns: 1fr; } }
+
+    .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    @media (max-width: 520px) { .check-grid { grid-template-columns: 1fr; } }
+
+    .check-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: #201F1E; cursor: pointer;
+      padding: 6px 8px;
+      border: 1px solid #E1DFDD;
+      border-radius: 4px;
+      user-select: none;
+      transition: background 0.1s;
+    }
+    .check-item:hover { background: #F3F2F1; }
+    .check-item input[type=checkbox] { width: 15px; height: 15px; flex-shrink: 0; accent-color: #0078D4; cursor: pointer; }
+
+    .validation-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .tag-input-wrap {
+      border: 1px solid #8A8886;
+      border-radius: 4px;
+      padding: 5px 8px;
+      display: flex; flex-wrap: wrap; gap: 5px;
+      min-height: 38px; cursor: text;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .tag-input-wrap:focus-within {
+      border-color: #0078D4;
+      box-shadow: 0 0 0 2px rgba(0,120,212,0.2);
+    }
+    .tag {
+      background: #DEECF9; color: #004578;
+      border-radius: 3px; padding: 2px 7px;
+      font-size: 12px; display: flex; align-items: center; gap: 4px;
+    }
+    .tag button {
+      background: none; border: none; cursor: pointer;
+      color: #004578; font-size: 14px; padding: 0; line-height: 1;
+    }
+    .tag-input {
+      border: none; outline: none; font-size: 13px;
+      min-width: 140px; background: transparent;
+      color: #201F1E; font-family: inherit;
+    }
+
+    hr { border: none; border-top: 1px solid #E1DFDD; margin: 1.5rem 0 0; }
+
+    .val-banner {
+      display: none;
+      align-items: flex-start; gap: 10px;
+      border: 1px solid;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin: 1.5rem 0 0.5rem;
+    }
+    .val-banner.show { display: flex; }
+    .val-banner.success { border-color: #107C10; background: #DFF6DD; color: #0B5A08; }
+    .val-banner.failure { border-color: #A4262C; background: #FDE7E9; color: #A4262C; }
+    .val-banner i { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .val-banner div { font-size: 13px; }
+    .val-banner ul { margin: 4px 0 0; padding-left: 1.2rem; }
+
+    .submit-row {
+      display: flex; justify-content: flex-end; gap: 10px;
+      margin-top: 1.75rem;
+    }
+    .btn {
+      padding: 8px 20px; font-size: 14px;
+      border-radius: 4px; cursor: pointer;
+      font-family: inherit; font-weight: 600;
+      transition: background 0.15s;
+    }
+    .btn-outline {
+      background: #fff; border: 1px solid #8A8886; color: #201F1E;
+    }
+    .btn-outline:hover { background: #F3F2F1; }
+    .btn-primary {
+      background: #0078D4; border: none; color: #fff;
+    }
+    .btn-primary:hover { background: #106EBE; }
+    .btn-download {
+      background: #fff; border: 1px solid #0078D4; color: #0078D4;
+    }
+    .btn-download:hover { background: #DEECF9; }
+
+    .json-output-wrap {
+      display: none;
+      margin-top: 1.5rem;
+      border: 1px solid #E1DFDD;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .json-output-wrap.show { display: block; }
+    .json-toolbar {
+      background: #F3F2F1;
+      border-bottom: 1px solid #E1DFDD;
+      padding: 6px 12px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .json-toolbar span { font-size: 12px; color: #605E5C; font-weight: 600; }
+    .json-copy-btn {
+      font-size: 12px; padding: 3px 10px;
+      background: #fff; border: 1px solid #8A8886;
+      border-radius: 3px; cursor: pointer; font-family: inherit;
+      color: #201F1E;
+    }
+    .json-copy-btn:hover { background: #DEECF9; }
+    pre#json-output {
+      background: #FAF9F8;
+      padding: 1rem;
+      font-size: 12px;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #201F1E;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-wrap">
+  <div class="form-header">
+    <h1>AEP/RTCDP Promotion Request</h1>
+    <p class="subtitle">Initiative intake &amp; governance form · Bounteous CDP Delivery · All fields marked <strong>*</strong> are required before promotion can be honored</p>
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+    <div class="progress-label" id="progress-label">0% complete</div>
+  </div>
+
+  <div class="form-body">
+
+    <!-- SECTION 1 -->
+    <div class="section">
+      <div class="section-title"><i class="ti ti-file-description"></i> Initiative details</div>
+      <div class="section-sub">Identifies the initiative being promoted and responsible parties</div>
+    </div>
+
+    <div class="two-col">
+      <div class="field" data-required>
+        <label for="ticket-id">Initiative / ticket ID <span class="req">*</span></label>
+        <input type="text" id="ticket-id" placeholder="e.g. CDP-1042" />
+        <div class="hint">Jira ticket or internal ID</div>
+        <div class="error-msg">Ticket ID is required</div>
+      </div>
+      <div class="field" data-required>
+        <label for="initiative-name">Initiative name <span class="req">*</span></label>
+        <input type="text" id="initiative-name" placeholder="e.g. Loyalty Profile Schema v3" />
+        <div class="error-msg">Initiative name is required</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field" data-required>
+        <label for="submitter">Submitting architect / engineer <span class="req">*</span></label>
+        <input type="text" id="submitter" placeholder="Full name" />
+        <div class="error-msg">Submitter name is required</div>
+      </div>
+      <div class="field" data-required>
+        <label for="approver">Client stakeholder / approver <span class="req">*</span></label>
+        <input type="text" id="approver" placeholder="Full name" />
+        <div class="error-msg">Approver name is required</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field" data-required>
+        <label for="promo-date">Promotion date requested <span class="req">*</span></label>
+        <input type="date" id="promo-date" />
+        <div class="error-msg">Date is required</div>
+      </div>
+      <div class="field" data-required>
+        <label for="target-env">Target environment <span class="req">*</span></label>
+        <select id="target-env">
+          <option value="">Select environment</option>
+          <option value="stage">Stage / Pre-Prod</option>
+          <option value="prod">Production</option>
+        </select>
+        <div class="error-msg">Select a target environment</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="description">Brief description of change</label>
+      <textarea id="description" placeholder="Describe the purpose and scope of this promotion request…"></textarea>
+    </div>
+
+    <hr />
+
+    <!-- SECTION 2 -->
+    <div class="section">
+      <div class="section-title"><i class="ti ti-layers-intersect"></i> AEP product area &amp; change type</div>
+      <div class="section-sub">Select all AEP products involved and classify the type of change</div>
+    </div>
+
+    <div class="field" data-required data-group="product" id="field-product">
+      <label>AEP product area(s) affected <span class="req">*</span></label>
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" name="product" value="RTCDP"> Real-Time CDP</label>
+        <label class="check-item"><input type="checkbox" name="product" value="AJO"> AJO (Journey Optimizer)</label>
+        <label class="check-item"><input type="checkbox" name="product" value="schemas"> Data Model / Schemas</label>
+        <label class="check-item"><input type="checkbox" name="product" value="datasets"> Datasets &amp; Ingestion</label>
+        <label class="check-item"><input type="checkbox" name="product" value="segmentation"> Segmentation / Audiences</label>
+        <label class="check-item"><input type="checkbox" name="product" value="destinations"> Destinations &amp; Activations</label>
+        <label class="check-item"><input type="checkbox" name="product" value="identities"> Identity Service</label>
+        <label class="check-item"><input type="checkbox" name="product" value="dataflows"> Dataflows / Sources</label>
+        <label class="check-item"><input type="checkbox" name="product" value="dataprep"> Data Prep &amp; Mappings</label>
+        <label class="check-item"><input type="checkbox" name="product" value="launch"> Data Collection / Launch</label>
+      </div>
+      <div class="error-msg">Select at least one product area</div>
+    </div>
+
+    <div class="field" data-required data-group="change" id="field-change-type">
+      <label>Change type <span class="req">*</span></label>
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" name="change" value="created"> Net-new (created)</label>
+        <label class="check-item"><input type="checkbox" name="change" value="enhanced"> Enhanced / updated</label>
+        <label class="check-item"><input type="checkbox" name="change" value="troubleshot"> Troubleshot / patched</label>
+        <label class="check-item"><input type="checkbox" name="change" value="deprecated"> Deprecated / retired</label>
+        <label class="check-item"><input type="checkbox" name="change" value="migrated"> Migrated</label>
+        <label class="check-item"><input type="checkbox" name="change" value="config"> Config / settings change</label>
+      </div>
+      <div class="error-msg">Select at least one change type</div>
+    </div>
+
+    <hr />
+
+    <!-- SECTION 3 -->
+    <div class="section">
+      <div class="section-title"><i class="ti ti-database"></i> Asset inventory</div>
+      <div class="section-sub">List all AEP objects in scope — determines what can be automatically promoted vs. manual</div>
+    </div>
+
+    <div class="field">
+      <label>Schemas <span style="font-size:11px;color:#605E5C;font-weight:400">(type and press Enter)</span></label>
+      <div class="tag-input-wrap" id="wrap-schemas" onclick="document.getElementById('input-schemas').focus()">
+        <input class="tag-input" id="input-schemas" placeholder="Add schema name…" data-wrap="wrap-schemas" />
+      </div>
+      <div class="hint">e.g. Loyalty Profile Schema, Transaction Event Schema</div>
+    </div>
+
+    <div class="field">
+      <label>Datasets</label>
+      <div class="tag-input-wrap" id="wrap-datasets" onclick="document.getElementById('input-datasets').focus()">
+        <input class="tag-input" id="input-datasets" placeholder="Add dataset name…" data-wrap="wrap-datasets" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Audiences / segments</label>
+      <div class="tag-input-wrap" id="wrap-audiences" onclick="document.getElementById('input-audiences').focus()">
+        <input class="tag-input" id="input-audiences" placeholder="Add audience name…" data-wrap="wrap-audiences" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Destinations / activations</label>
+      <div class="tag-input-wrap" id="wrap-destinations" onclick="document.getElementById('input-destinations').focus()">
+        <input class="tag-input" id="input-destinations" placeholder="Add destination name…" data-wrap="wrap-destinations" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>AJO journeys / campaigns</label>
+      <div class="tag-input-wrap" id="wrap-journeys" onclick="document.getElementById('input-journeys').focus()">
+        <input class="tag-input" id="input-journeys" placeholder="Add journey or campaign name…" data-wrap="wrap-journeys" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="other-assets">Other assets (dataflows, mappings, Launch rules, etc.)</label>
+      <textarea id="other-assets" placeholder="List any additional assets not covered above…"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="manual-assets">Assets requiring <strong>manual</strong> promotion (cannot be auto-promoted)</label>
+      <textarea id="manual-assets" placeholder="List assets that must be manually recreated or configured in target environment, and explain why…"></textarea>
+      <div class="hint">e.g. destination credentials, manual API configurations, environment-specific sandbox settings</div>
+    </div>
+
+    <hr />
+
+    <!-- SECTION 4 -->
+    <div class="section">
+      <div class="section-title"><i class="ti ti-fingerprint"></i> Identity configuration</div>
+      <div class="section-sub">Required when schemas or identity service are in scope</div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label for="primary-ns">Primary identity namespace</label>
+        <select id="primary-ns">
+          <option value="">Select namespace</option>
+          <option>ECID</option>
+          <option>Email</option>
+          <option>Phone</option>
+          <option>Customer ID (CRM)</option>
+          <option>Loyalty ID</option>
+          <option>IDFA</option>
+          <option>GAID</option>
+          <option>Custom namespace</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="custom-ns-name">Custom namespace name (if applicable)</label>
+        <input type="text" id="custom-ns-name" placeholder="e.g. FirstCitizens_AccountID" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Additional namespaces in scope</label>
+      <div class="tag-input-wrap" id="wrap-ns" onclick="document.getElementById('input-ns').focus()">
+        <input class="tag-input" id="input-ns" placeholder="Add namespace…" data-wrap="wrap-ns" />
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label for="xdm-field">Identity domain / XDM field path</label>
+        <input type="text" id="xdm-field" placeholder="e.g. identityMap.Email[0].id" />
+        <div class="hint">XDM field that carries the primary identity</div>
+      </div>
+      <div class="field">
+        <label for="profile-enabled">Profile enablement</label>
+        <select id="profile-enabled">
+          <option value="">Select</option>
+          <option>Enabled for profile</option>
+          <option>Not profile-enabled</option>
+          <option>Profile enablement changed in this initiative</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="identity-notes">Identity graph impact notes</label>
+      <textarea id="identity-notes" placeholder="Describe any expected impact on identity stitching, merging policies, or ID graph topology…"></textarea>
+    </div>
+
+    <hr />
+
+    <!-- SECTION 5 -->
+    <div class="section">
+      <div class="section-title"><i class="ti ti-shield-check"></i> Pre-promotion validation</div>
+      <div class="section-sub">All applicable validations must be completed before submission is accepted</div>
+    </div>
+
+    <div class="field" data-required data-group="validation" id="field-validations">
+      <label>Validation steps completed <span class="req">*</span></label>
+      <div class="validation-list">
+        <label class="check-item"><input type="checkbox" name="validation" value="data_launch"> Data Collection / Launch approval lane review completed</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="schema_qa"> Schema field group review &amp; QA sign-off</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="dataset_ingestion"> Dataset ingestion validated (sample data confirmed)</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="profile_union"> Profile union view spot-checked</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="audience_eval"> Audience evaluation run and result count verified</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="ajo_qa"> AJO journey validated in QA / Pre-Prod environment</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="ajo_suppression"> AJO suppression lists and frequency caps confirmed</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="destination_test"> Destination test activation completed (sample profile)</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="identity_stitching"> Identity stitching behavior confirmed in target env</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="data_gov"> Data governance labels and consent policies verified</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="no_regression"> Regression check — existing live journeys / audiences unaffected</label>
+        <label class="check-item"><input type="checkbox" name="validation" value="rollback_plan"> Rollback plan documented</label>
+      </div>
+      <div class="error-msg">At least one validation step must be confirmed</div>
+    </div>
+
+    <div class="field">
+      <label for="val-notes">Validation notes / links to evidence</label>
+      <textarea id="val-notes" placeholder="Paste links to QA reports, screenshots, Confluence pages, or additional notes…"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="risks">Known risks or exceptions</label>
+      <textarea id="risks" placeholder="Document any deviations from standard validation, accepted risks, or items deferred to post-promotion…"></textarea>
+    </div>
+
+    <!-- Banners -->
+    <div class="val-banner success" id="val-banner-ok">
+      <i class="ti ti-circle-check"></i>
+      <div><strong>Ready for submission</strong> — all required fields completed. JSON payload generated below.</div>
+    </div>
+    <div class="val-banner failure" id="val-banner-err">
+      <i class="ti ti-alert-circle"></i>
+      <div><strong>Fix the following before submitting:</strong><ul id="err-list"></ul></div>
+    </div>
+
+    <!-- JSON output -->
+    <div class="json-output-wrap" id="json-output-wrap">
+      <div class="json-toolbar">
+        <span><i class="ti ti-code"></i> Backend payload (JSON)</span>
+        <button class="json-copy-btn" onclick="copyJSON()">Copy JSON</button>
+      </div>
+      <pre id="json-output"></pre>
+    </div>
+
+    <div class="submit-row">
+      <button class="btn btn-outline" onclick="resetForm()">Clear form</button>
+      <button class="btn btn-download" onclick="downloadJSON()"><i class="ti ti-download"></i> Download JSON</button>
+      <button class="btn btn-primary" onclick="submitForm()">Submit for promotion</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ── Tag inputs ── */
+  const tagData = {};
+
+  document.querySelectorAll('.tag-input').forEach(function(input) {
+    var wrapId = input.dataset.wrap;
+    tagData[wrapId] = [];
+    input.addEventListener('keydown', function(e) {
+      if ((e.key === 'Enter' || e.key === ',') && input.value.trim()) {
+        e.preventDefault();
+        addTag(wrapId, input.value.trim());
+        input.value = '';
+        updateProgress();
+      }
+    });
+  });
+
+  function addTag(wrapId, text) {
+    if (!text || tagData[wrapId].indexOf(text) !== -1) return;
+    tagData[wrapId].push(text);
+    var wrap = document.getElementById(wrapId);
+    var tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.dataset.value = text;
+    tag.innerHTML = text + '<button type="button" aria-label="Remove ' + text + '" onclick="removeTag(\'' + wrapId + '\',\'' + text.replace(/'/g,"&#39;").replace(/"/g,"&quot;") + '\',this)">×</button>';
+    wrap.insertBefore(tag, wrap.querySelector('.tag-input'));
+  }
+
+  function removeTag(wrapId, text, btn) {
+    tagData[wrapId] = tagData[wrapId].filter(function(t){ return t !== text; });
+    btn.parentElement.remove();
+    updateProgress();
+  }
+
+  /* ── Progress ── */
+  function updateProgress() {
+    var total = 9;
+    var filled = 0;
+    var textIds = ['ticket-id','initiative-name','submitter','approver','promo-date','target-env'];
+    textIds.forEach(function(id){
+      var el = document.getElementById(id);
+      if (el && el.value.trim()) filled++;
+    });
+    if (checkedValues('product').length > 0) filled++;
+    if (checkedValues('change').length > 0) filled++;
+    if (checkedValues('validation').length > 0) filled++;
+    var pct = Math.round((filled / total) * 100);
+    document.getElementById('progress').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = pct + '% complete';
+  }
+
+  document.querySelectorAll('input, select, textarea').forEach(function(el){
+    el.addEventListener('change', updateProgress);
+    el.addEventListener('input', updateProgress);
+  });
+
+  function checkedValues(name) {
+    return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked')).map(function(c){ return c.value; });
+  }
+
+  /* ── Validation ── */
+  function validateForm() {
+    var errors = [];
+    document.querySelectorAll('.field.invalid').forEach(function(f){ f.classList.remove('invalid'); });
+
+    var requiredText = [
+      { id: 'ticket-id', label: 'Initiative / ticket ID' },
+      { id: 'initiative-name', label: 'Initiative name' },
+      { id: 'submitter', label: 'Submitting architect / engineer' },
+      { id: 'approver', label: 'Client stakeholder / approver' },
+      { id: 'promo-date', label: 'Promotion date requested' },
+      { id: 'target-env', label: 'Target environment' }
+    ];
+
+    requiredText.forEach(function(f){
+      var el = document.getElementById(f.id);
+      if (!el || !el.value.trim()) {
+        errors.push(f.label);
+        if (el) el.closest('.field').classList.add('invalid');
+      }
+    });
+
+    if (checkedValues('product').length === 0) {
+      errors.push('AEP product area(s) affected');
+      document.getElementById('field-product').classList.add('invalid');
+    }
+    if (checkedValues('change').length === 0) {
+      errors.push('Change type');
+      document.getElementById('field-change-type').classList.add('invalid');
+    }
+    if (checkedValues('validation').length === 0) {
+      errors.push('Pre-promotion validation steps');
+      document.getElementById('field-validations').classList.add('invalid');
+    }
+    return errors;
+  }
+
+  /* ── Build payload ── */
+  function buildPayload() {
+    return {
+      meta: {
+        form_version: "1.0.0",
+        submitted_at: new Date().toISOString(),
+        source: "aep-promotion-form"
+      },
+      initiative: {
+        ticket_id: document.getElementById('ticket-id').value.trim(),
+        name: document.getElementById('initiative-name').value.trim(),
+        submitter: document.getElementById('submitter').value.trim(),
+        approver: document.getElementById('approver').value.trim(),
+        promotion_date_requested: document.getElementById('promo-date').value,
+        target_environment: document.getElementById('target-env').value,
+        description: document.getElementById('description').value.trim()
+      },
+      aep_scope: {
+        product_areas: checkedValues('product'),
+        change_types: checkedValues('change')
+      },
+      assets: {
+        schemas: tagData['wrap-schemas'] || [],
+        datasets: tagData['wrap-datasets'] || [],
+        audiences: tagData['wrap-audiences'] || [],
+        destinations: tagData['wrap-destinations'] || [],
+        journeys_campaigns: tagData['wrap-journeys'] || [],
+        other: document.getElementById('other-assets').value.trim(),
+        manual_promotion_required: document.getElementById('manual-assets').value.trim()
+      },
+      identity: {
+        primary_namespace: document.getElementById('primary-ns').value,
+        custom_namespace_name: document.getElementById('custom-ns-name').value.trim(),
+        additional_namespaces: tagData['wrap-ns'] || [],
+        xdm_field_path: document.getElementById('xdm-field').value.trim(),
+        profile_enablement: document.getElementById('profile-enabled').value,
+        graph_impact_notes: document.getElementById('identity-notes').value.trim()
+      },
+      validation: {
+        steps_completed: checkedValues('validation'),
+        evidence_notes: document.getElementById('val-notes').value.trim(),
+        known_risks: document.getElementById('risks').value.trim()
+      }
+    };
+  }
+
+  /* ── Submit ── */
+  function submitForm() {
+    var errors = validateForm();
+    var okBanner = document.getElementById('val-banner-ok');
+    var errBanner = document.getElementById('val-banner-err');
+    var errList = document.getElementById('err-list');
+    var jsonWrap = document.getElementById('json-output-wrap');
+
+    if (errors.length) {
+      okBanner.classList.remove('show');
+      jsonWrap.classList.remove('show');
+      errList.innerHTML = errors.map(function(e){ return '<li>' + e + '</li>'; }).join('');
+      errBanner.classList.add('show');
+      errBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      errBanner.classList.remove('show');
+      var payload = buildPayload();
+      document.getElementById('json-output').textContent = JSON.stringify(payload, null, 2);
+      okBanner.classList.add('show');
+      jsonWrap.classList.add('show');
+      okBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      /*
+       * ── BACKEND HOOK ──────────────────────────────────────────────
+       * To wire this form to your BitBucket-backed promotion scripts,
+       * replace the fetch URL and auth header below.
+       *
+       * fetch('https://YOUR-API-ENDPOINT/promotions', {
+       *   method: 'POST',
+       *   headers: {
+       *     'Content-Type': 'application/json',
+       *     'Authorization': 'Bearer YOUR_TOKEN'
+       *   },
+       *   body: JSON.stringify(payload)
+       * })
+       * .then(function(res){ return res.json(); })
+       * .then(function(data){ console.log('Promotion triggered:', data); })
+       * .catch(function(err){ console.error('Promotion API error:', err); });
+       * ──────────────────────────────────────────────────────────────
+       */
+    }
+  }
+
+  /* ── Download JSON ── */
+  function downloadJSON() {
+    var errors = validateForm();
+    if (errors.length) {
+      submitForm();
+      return;
+    }
+    var payload = buildPayload();
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var ticketId = document.getElementById('ticket-id').value.trim() || 'draft';
+    a.href = url;
+    a.download = 'aep-promotion-' + ticketId + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  /* ── Copy JSON ── */
+  function copyJSON() {
+    var text = document.getElementById('json-output').textContent;
+    navigator.clipboard.writeText(text).then(function(){
+      var btn = document.querySelector('.json-copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(function(){ btn.textContent = 'Copy JSON'; }, 2000);
+    });
+  }
+
+  /* ── Reset ── */
+  function resetForm() {
+    if (!confirm('Clear all fields?')) return;
+    document.querySelectorAll('input:not([type=checkbox]):not([type=radio]), select, textarea').forEach(function(el){ el.value = ''; });
+    document.querySelectorAll('input[type=checkbox]').forEach(function(el){ el.checked = false; });
+    Object.keys(tagData).forEach(function(k){
+      tagData[k] = [];
+      var wrap = document.getElementById(k);
+      if (wrap) wrap.querySelectorAll('.tag').forEach(function(t){ t.remove(); });
+    });
+    document.querySelectorAll('.field.invalid').forEach(function(f){ f.classList.remove('invalid'); });
+    document.getElementById('val-banner-ok').classList.remove('show');
+    document.getElementById('val-banner-err').classList.remove('show');
+    document.getElementById('json-output-wrap').classList.remove('show');
+    updateProgress();
+  }
+</script>
+</body>
+</html>
