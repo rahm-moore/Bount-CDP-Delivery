@@ -1,0 +1,14 @@
+%% Data Flow Diagram — [Use Case Name]
+%% Shows the actual path an event/record takes, including transformation points.
+graph TD
+    A[Client-side Data Layer\ne.g. alloy.js / utag.js] -->|event fires| B[Collection Endpoint\nAdobe: Datastream]
+    B -->|schema validation| C[Canonical Schema\nAdobe: XDM]
+    C --> D[Event/Record Dataset]
+    D --> E{Identity Resolution}
+    E -->|merged| F[Unified Profile]
+    F --> G[Segment/Audience Build]
+    G --> H[Destination Activation]
+    D --> I[Analytics/Reporting Layer]
+
+    classDef gate fill:#fff3cd,stroke:#856404;
+    class E gate;

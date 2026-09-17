@@ -1,0 +1,16 @@
+%% Identity Resolution Sequence — anonymous-to-known transition
+sequenceDiagram
+    participant U as Visitor (Anonymous)
+    participant DL as Client-side Data Layer
+    participant CDP as CDP Platform
+    participant ID as Identity Service
+    participant P as Unified Profile
+
+    U->>DL: Browses site (anonymous device ID assigned)
+    DL->>CDP: Sends events tagged with device ID namespace
+    CDP->>ID: Registers device ID
+    U->>DL: Logs in (known ID captured)
+    DL->>CDP: Sends login event with device ID + known ID
+    CDP->>ID: Links device ID to known ID
+    ID->>P: Merge profiles per merge policy
+    P-->>CDP: Unified profile now includes pre-login history\n(per retroactive-attribution policy)
