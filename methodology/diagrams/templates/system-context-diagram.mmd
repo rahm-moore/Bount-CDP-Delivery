@@ -1,0 +1,27 @@
+%% System Context Diagram — [Engagement Name]
+%% High-level only: no internal implementation detail. One box per system.
+graph LR
+    subgraph Sources
+        Web[Web Property]
+        Mobile[Mobile App]
+        CRM[CRM System]
+        POS[Point of Sale / Core Banking]
+    end
+
+    subgraph "CDP Platform (Collection Endpoint(s) / Adobe: Datastream)"
+        CDP[CDP Core\nProfile + Event Store]
+    end
+
+    subgraph Destinations
+        Ads[Advertising Platforms]
+        Email[Email/Marketing Automation]
+        BI[Analytics / Reporting Layer]
+    end
+
+    Web --> CDP
+    Mobile --> CDP
+    CRM --> CDP
+    POS --> CDP
+    CDP --> Ads
+    CDP --> Email
+    CDP --> BI
